@@ -1,0 +1,29 @@
+Source: userspace-resource-manager-extensions
+Section: libs
+Maintainer: Jagadeesh Pagadala <jpagadal@qti.qualcomm.com>
+Uploaders:
+ Agathe Porte <agathe.porte@oss.qualcomm.com>,
+Build-Depends:
+ debhelper-compat (= 13),
+Build-Depends-Arch:
+ dh-sequence-cmake,
+ cmake,
+ pkgconf,
+ userspace-resource-manager (>= 0.4.3),
+Standards-Version: 4.6.2
+Homepage: https://github.com/qualcomm/userspace-resource-manager-extensions
+Vcs-Browser: https://github.com/qualcomm-linux/pkg-urm-ext
+Vcs-Git: https://github.com/qualcomm-linux/pkg-urm-ext.git
+
+Package: userspace-resource-manager-extensions
+Architecture: any
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: Extension Configs & Plugins for Userspace Resource Manager
+ The URM Extensions framework provides a mechanism for customizing URM
+ behaviour, for example: Add new custom resources and signals without modifying
+ the core URM codebase, Override default resource handlers with custom
+ implementations, Provide target-specific configurations for different hardware
+ platforms. The URM Extensions framework allows for extending URM functionality
+ through a clean plugin architecture.
