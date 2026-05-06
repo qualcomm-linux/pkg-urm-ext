@@ -1,7 +1,7 @@
 Source: userspace-resource-manager-extensions
 Section: libs
 Priority: optional
-Maintainer: Jagadeesh Pagadala <jpagadal@qti.qualcomm.com>
+Maintainer: <Maintainers.userspace-resource-manager-extensions@qti.qualcomm.com>
 Build-Depends: debhelper-compat (= 13), dh-sequence-cmake, cmake, pkgconf,
  libglib2.0-dev, userspace-resource-manager
 Standards-Version: 1.0
@@ -10,6 +10,6 @@ Homepage: https://github.com/qualcomm/userspace-resource-manager-extensions
 Package: userspace-resource-manager-extensions
 Architecture: any
 Section: libs
-Depends:  ${shlibs:Depends}, ${misc:Depends}
+Depends:  userspace-resource-manager, ${shlibs:Depends}, ${misc:Depends}
 Description: 
 
