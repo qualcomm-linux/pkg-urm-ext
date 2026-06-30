@@ -1,146 +1,332 @@
-# pkg-template
+# Userspace Resource Manager Extensions (URM Extensions)
 
-This repository serves as a template for creating Debian package repositories within the Qualcomm Linux ecosystem. It provides the essential structure, GitHub workflows, and configuration necessary to integrate with the [qcom-build-utils](https://github.com/qualcomm-linux/qcom-build-utils) repository, enabling standardized Debian package building processes.
+Official repository for URM Extensions project. This project provides **customizations and extensions** for the [Userspace Resource Manager (URM)](https://github.com/qualcomm/userspace-resource-manager).
 
-## Quick Start
+## Overview
 
-To create a new Debian package repository using this template:
+The **Userspace Resource Manager (URM)** provides a standard upstream framework for managing system resources through a well-defined set of resources and signals. However, different targets, segments, and use cases often require:
 
-1. Navigate to this repository's GitHub page and click the **"Use this template"** button located in the top right corner.
-2. Select **qualcomm-linux** as the organization in the drop-down menu. This is necessary.
-3. Name the new repository with the prefix `pkg-` to adhere to the naming convention for package repositories. This is necessary.
-4. Ensure the **"Include all branches"** option is enabled. Otherwise by default, only the default branch "main" is cloned.
+- **Custom resources** beyond the standard upstream set
+- **Target-specific signals** tailored to particular usecase and hardware platforms
+- **Specialized resource provisioning logic** for unique scenarios
+
+The **URM Extensions** framework enables developers to:
+
+- Add new custom resources and signals without modifying the core URM codebase
+- Override default resource handlers with custom implementations
+- Provide target-specific configurations for different hardware platforms
+- Extend URM functionality through a clean plugin architecture
+
+## What's Included
+
+This repository contains:
+
+- **Extended Configurations**: Custom resource and signal configurations for specific targets
+- **Extension Modules**: Plugin implementations that extend URM's core functionality
+- **Target-Specific Configs**: Hardware-specific tuning parameters for platforms like qcm6490, qcs8300, qcs9100
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         Userspace Resource Manager (URM)                │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  Standard Upstream Resources & Signals           │   │
+│  │  - CPU, GPU, Memory, Cgroups, etc.               │   │
+│  │  - Generic app lifecycle signals                 │   │
+│  └──────────────────────────────────────────────────┘   │
+│                         ▲                               │
+│                         │                               │
+│                         │ Extension Interface           │
+│                         │                               │
+└─────────────────────────┼───────────────────────────────┘
+                          │
+┌─────────────────────────┼────────────────────────────────┐
+│                         │                                │
+│    URM Extensions (This Project)                         │
+│  ┌──────────────────────┴──────────────────────────┐     │
+│  │  Custom Resources & Signals                     │     │
+│  │  - GPU resources (power levels, devfreq)        │     │
+│  │  - Multimedia signals (video decode, camera)    │     │
+│  │  - Target-specific optimizations                │     │
+│  └─────────────────────────────────────────────────┘     │
+│  ┌──────────────────────────────────────────────────┐    │
+│  │  Extensions                                      │    │
+│  │  - Custom resource handlers                      │    │
+│  │  - Post processing logic                         │    │
+│  │  - custom developer/customer specific features   │    │
+│  └──────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────┘
+
+```
+
+## When to Use Extensions
+
+Use URM Extensions when you need to:
+
+| Scenario                                                      |                   Solution                                       |
+|---------------------------------------------------------------|------------------------------------------------------------------|
+| Add hardware-specific resources (e.g., vendor GPU controls)   | Define custom resources in `Configs/ResourcesConfig.yaml`        |
+| Implement target-specific signals                             | Add signal configurations in `Configs/SignalsConfig.yaml`        |
+| Override default resource provisioning logic                  | Register custom callbacks via extension APIs                     |
+| Support multiple hardware variants                            | Use target-specific config directories `Configs/target-specific` |
+| Add post-processing or validation logic                       | Implement extension modules                                      |
 
 ## Branches
 
-- **main**: The primary branch containing workflow logic in the `.github/` folder, along with boilerplate documentation files such as license, contribution guidelines, and this README.
-- **debian/qcom-next**: An orphan branch with unrelated history from main. It contains a debian/ folder with template files. Its just to give a starting point and structure. The first job for the user templating from this repo will be to update this debian/ folder. The information about the name **debian/qcom-next** and other naming conventions can be found [here](https://qualcomm-confluence.atlassian.net/wiki/spaces/LinuxCoreOS/pages/2879858691/pkg-+repository+specification)
+**main**: Primary development branch. Contributors should develop submissions based on this branch, and submit pull requests to this branch.
 
-## Workflows
+## Requirements
 
-The `main` branch includes the following workflows in the `.github/workflows/` directory:
+This project depends on the URM project:
+- **Repository**: https://github.com/qualcomm/userspace-resource-manager
+- **Required Libraries**: UrmExtApis, UrmAuxUtils
+- **Required Headers**: Urm/Extensions.h, Urm/UrmPlatformAL.h
 
-- **qcom-preflight-checks.yml**: A sanity check workflow inherited from the base Qualcomm template.
-- **stale-issues.yml**: A workflow for managing stale issues, also inherited from the base template.
-- **build-debian-package.yml**: Builds the Debian package for this repository. This workflow serves as an entry point that invokes reusable workflows from the centralized qcom-build-utils repository.
-- **pr-pre-post-merge.yml**: This workflow executes during a PR, and once the PR is merged. 
-- **promote-upstream.yml**: Promotes the package's tracking version to a new upstream release. This workflow also triggers reusable workflows in qcom-build-utils.
-- **release**: Used to trigger a release of a package
+## Build and Install Instructions
 
-## IMPORTANT: Workflow to paste in the upstream source repo
+### On Ubuntu
 
-The .github/TO_PASTE_IN_UPSTREAM_REPO/pkg-build-pr-check.yml needs to be transfered over to the source repo.
-Once this is done, delete the TO_PASTE_IN_UPSTREAM_REPO as it is not necessary to keep in this repository once the workflow has been transfered.
+#### Step 1: Build and Install URM
 
-**This workflow needs to be put in the default branch of the source repo (likely branch main unless you modify it), otherwise it wont work** This is per new December Github update
+First, build and install the base URM framework:
 
-## Repository Configuration
+```bash
+# Follow the instructions at:
+# https://github.com/qualcomm/userspace-resource-manager#build-and-install-instructions
+```
 
-### Runners
+Successful completion of Step 1 ensures these dependencies are met.
 
-All the workflows are running on the github arm64 runners. Some sections need to run on the AWS runners where access to S3 buckets and artifactory. You will need to ask **Steve Manley** to enable the repo for the AWS runners.
+#### Step 2: Build and Install Extension Plugin
 
-### GHCR Registry Access
+Build the extensions module:
 
-The build workflows rely on the `pkg-builder` container image hosted in the qualcomm-linux GitHub Container Registry (GHCR). For your newly created repository to be able to pull this image, it must be explicitly granted `packages:read` access.
+```bash
+# Create a build directory
+rm -rf build && mkdir build && cd build
 
-To request this, please contact **Mark Matyas** (mmatyas@qti.qualcomm.com) and ask him to add your repository to the list of repositories authorized to access the `pkg-builder` package. The relevant settings page is:
+# Configure the project
+cmake .. -DCMAKE_INSTALL_PREFIX=/
 
-https://github.com/orgs/qualcomm-linux/packages/container/pkg-builder/settings
+# Build the extensions project
+cmake --build .
 
-### Repository Variables
+# Install (requires sudo)
+sudo cmake --install .
+```
 
-Set the following repository variables to establish links between upstream and package repositories:
+**What Step 2 Does**:
+- Builds the extension module (`UrmPlugin.so`)
+- Installs the library to `/usr/lib/urm/`
+- Installs custom configurations to `/etc/urm/target/`
 
-- **UPSTREAM_REPO_GITHUB_NAME**: In this package repo, this is the GitHub name of the upstream repository (e.g. in the case of the pkg-example, `qualcomm-linux/qcom-example-package-source`).
-- **PKG_REPO_GITHUB_NAME**: This variable is set in the upstream project repo; the GitHub name of the package repository (e.g., `qualcomm-linux/pkg-example`).
+When URM starts, it automatically loads `UrmPlugin.so` and applies the customizations.
 
-### Branch Protection Rules
+#### Step 3: Start URM Server
 
-Configure branch protection for `debian/**` and `qcom/**`:
+```bash
+/usr/bin/urm
+```
 
-- Restrict deletions.
-- Require pull requests before merging.
-- Block force pushes.
-- Add `build / build-debian-package` as a required status check.
-- Add the `qcom-service-bot` account with admin rights
-- Add the Admin role to the branche protection ruleset so that the qcom-service-bot can push directly to those branches
-### Additional Settings
+The URM server will:
+1. Load the base upstream resources and signals
+2. Discover and load `UrmPlugin.so`
+3. Apply custom resources, signals, and handlers from the extensions
+4. Start serving requests with the extended functionality
 
-- Enable **"Automatically delete head branches"** for pull requests.
-- Allow only merge commits for pull request merges.
-- Enable **release immutability** in the upstream repository.
-- Add the Qualcomm Github Service bot as a user with write access :
-  - While the repo is private, add the Github user **qcom-service-bot**.
-  - If/when the repo is made public, there will be a big change in how the contributors are handled. 
-    After that, the contributors list is cleared, and one need to re-enroll as a contributor. The way
-    to do that is completely different from when the repo was private. When it was private, the creator
-    of the repo had the possibility to go into the repo settings and add whoever. When made public, the
-    repo's maintainer/contributor list is managed by a Qualcomm internal mailing list. If the repo is
-    named pkg-foo, then the Maintainer list will be named Maintainers.pkg-foo, and one need to request
-    access via https://lists.qualcomm.com, find the list and ask access. For the bot, you must add it via
-    its qualcomm username **githubservice**@qti.qualcomm.com, as opposed to its Github handle above.
+## Project Structure
 
-## Making your pkg-repo to public
+```
+userspace-resource-manager-extensions/
+├── Configs/                         # Custom configuration files
+│   ├── InitConfig.yaml              # Initialization settings
+│   ├── ResourcesConfig.yaml         # Custom resource definitions
+│   ├── SignalsConfig.yaml           # Custom signal definitions
+│   ├── PerApp.yaml                  # Per-application configurations
+│   └── target-specific/             # Target-specific overrides
+│       ├── qcm6490/
+│       ├── alorp/
+│       ├── qcs615/
+│       ├── qcs8300/
+│       ├── qcs9100/
+│       └── qcs9075/  (shares config with qcs9100)
+├── Extensions/                      # Extension module implementations
+│   ├── CamPostProcessing.cpp        # GStreamer workload detector
+│   ├── GenieT2T.cpp                 # AI inference extension
+│   ├── PreemptRtExtn.cpp            # RT benchmark extension
+│   ├── PredefCallbacks.cpp          # Predefined IRQ callbacks
+│   └── Helpers.cpp                  # Shared utility functions
+├── docs/                            # Detailed documentation
+│   └── README.md                    
+└── README.md                        # This file
+```
 
-When your pkg-repo is mature enough, it will need to be made public.
+## Examples: Adding Custom Resources
 
-### How to make the repo go public
- 
-The first step in making a repo go public is the Tradesmark/legal process.
-Your POC (Person of Contact) in this step is [Stephanie Arce](sarce@qti.qualcomm.com)
+### Example 1: I/O Scheduler
 
-You need to [complete an OSS Contribution Request](https://jira-dc4.qualcomm.com/jira/secure/CreateIssue.jspa?pid=46536&issuetype=13440)
+#### 1. Define the Resource in Config
 
-Here is a bit of help on the mandatory fields when filling the form:
+Add to `Configs/ResourcesConfig.yaml`:
 
-- Components : Select "Other"
-- Summary : Give a short description such as "Debian packaging repository for X"
-- Project name: This would be the repo name, such as "pkg-example"
-- Destination URL: Give the Github URL, such as "www.github.com/qualcomm-linux/pkg-example"
-- Description: Give a description about the repo being a debian packaging repo, which packages another upstream project X
-- Project Licenses: Give the license of the repo. Unless something changes, it should remain  BSD-3-Clause License.
-- Contribution plan: 
-  - Project Description: You can give the same project description as above
-  - What are ourr general plan with the Project: Talk about it being the debian packaging for project X
-  - Do we have any Leadership positions in the project: Give yourself/manager
-  - Is Qualcomm expanding the project by contributing technology implementations: Likely a simple no
+```yaml
+ResourceConfigs:
+  - ResType: "0x80"                    # 0x80 reserved for Custom resources
+    ResID: "0x0001"                    # Custom ID
+    Name: "RES_DISK_IO_SCHEDULER"
+    Path: "/sys/block/sda/queue/scheduler"
+    Supported: true
+    HighThreshold: 3                   # Max scheduler index
+    LowThreshold: 0                    # Min scheduler index
+    Permissions: "third_party"
+    Policy: "pass_through"             # Always apply
+    # Scheduler mapping: 0=noop, 1=deadline, 2=cfq, 3=bfq
+```
 
-More information can be found [here](https://github.qualcomm.com/pages/osdo/handbook/qcom-github/docs/new-project-checklist/)
+#### 2. (Optional) Register Custom Handler
 
-Once submitted, it will generally take a couple of days to a week to get approval from Legal.
+In your extension module:
 
-The, once you receive an email about the acceptance of the Legal team, you will have to submit a ticket about enabling the repo.
+```cpp
+#include <Urm/Extensions.h>
 
-In this process, your POC will be [Mark Matyas](mmatyas@qti.qualcomm.com)
+int32_t applyCustomIoScheduler(void* res) {
+    // Custom logic to apply I/O scheduler
+    // Map numeric value to scheduler name
+    const char* schedulers[] = {"noop", "deadline", "cfq", "bfq"};
+    // Write scheduler name to sysfs
+    // ...
+    return 0;
+}
 
-Complete the form : https://ossops.qualcomm.com/github/enable-repo/
+int32_t teardownCustomIoScheduler(void* res) {
+    // Custom logic to restore default I/O scheduler
+    // Reset to system default scheduler
+    // ...
+    return 0;
+}
 
-### Note about Github Repo roles after going public
+// Register the custom handlers
+URM_REGISTER_RES_APPLIER_CB(0x00800001, applyCustomIoScheduler);
+URM_REGISTER_RES_TEAR_CB(0x00800001, teardownCustomIoScheduler);
+```
 
-When creating a repo withing the organization, it always starts as a private repo and one need to go through an approval
-process in order to have the repo go public. 
+#### 3. Use in Client Code
 
-Upon creation of the repo, the person who created it gets to be assigned the maintainer responsability and has full control
-over it in the settings. When the repo goes public, this changes. The repo creator stops having all the powers over the repo,
-and in order to join the repo as a contributor, one needs to enroll via a github mailing list instead of directly through the repo
-settings. 
+```cpp
+#include <Urm/UrmAPIs.h>
 
-This is the link to go to in order to ask to be a contributor or a maintainer of a Qualcomm publib github repo : 
-https://lists.qualcomm.com/ListManager
+SysResource resource;
+resource.mResCode = 0x00060001;  // RES_DISK_IO_SCHEDULER
+resource.mResInfo = 0;
+resource.mNumValues = 1;
+resource.mResValue.value = 2;    // Set scheduler to 'cfq'
+int64_t duration = 5000; /*milli seconds*/
+int32_t properties = 0;
+int32_t numRes = 1;
 
-In the searchbox, one need to find the contributor/maintainer list corresponding to the repo. 
-If the repo is named "pkg-example", then the list(s) to search for are : 
+int64_t handle = tuneResources(duration, properties, numRes, &resource);
+```
 
-- contributors.pkg-example
-- maintainers.pkg-example
+### Example 2: KGSL GPU
 
-It takes about an hour between the list acceptance and the new role to reflect in Github
+#### 1. Define the Resource in Config
+
+Add to `Configs/ResourcesConfig.yaml`:
+
+```yaml
+ResourceConfigs:
+  - ResType: "0x80"                    # GPU resource type
+    ResID: "0x0003"                    # Custom ID
+    Name: "RES_KGSL_DEF_PWRLEVEL"
+    Path: "/sys/class/kgsl/kgsl-3d0/default_pwrlevel"
+    Supported: true
+    HighThreshold: 6
+    LowThreshold: 0
+    Permissions: "third_party"
+    Modes: ["display_on", "doze"]
+    Policy: "lower_is_better"
+```
+
+#### 2. (Optional) Register Custom Handler
+
+In your extension module:
+
+```cpp
+#include <Urm/Extensions.h>
+
+int32_t applyCustomGpuPowerLevel(void* res) {
+    // Custom logic to apply GPU power level
+    // ...
+    return 0;
+}
+
+int32_t teardownCustomGpuPowerLevel(void* res) {
+    // Custom logic to restore default GPU power level
+    // Reset to default power level
+    // ...
+    return 0;
+}
+
+// Register the custom handlers
+URM_REGISTER_RES_APPLIER_CB(0x00800003, applyCustomGpuPowerLevel);
+URM_REGISTER_RES_TEAR_CB(0x00800003, teardownCustomGpuPowerLevel);
+```
+
+#### 3. Use in Client Code
+
+```cpp
+#include <Urm/UrmAPIs.h>
+
+SysResource resource;
+resource.mResCode = 0x00050003;  // RES_KGSL_DEF_PWRLEVEL
+resource.mResInfo = 0;
+resource.mNumValues = 1;
+resource.mResValue.value = 3;    // Set power level to 3
+int64_t duration = 5000; /*milli seconds*/
+int32_t properties = 0;
+int32_t numRes = 1;
+
+int64_t handle = tuneResources(duration, properties, numRes, &resource);
+```
+
+## Documentation
+
+For detailed documentation on:
+- Available custom resources and signals
+- Extension API reference
+- Target-specific configurations
+- Development guidelines
+
+Please refer to: [`docs/README.md`](docs/README.md)
+
+## Development
+
+### Contributing
+
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for:
+- Code style guidelines
+- Pull request process
+- Testing requirements
+- Documentation standards
+
+### Adding New Extensions
+
+1. Define your custom resources/signals in the appropriate config files
+2. Implement extension modules in the `Extensions/` directory
+3. Register callbacks using the extension API
+4. Test thoroughly on target hardware
+5. Submit a pull request with documentation
 
 ## Getting in Contact
 
-For support or inquiries, contact sbeaudoi@qti.qualcomm.com.
+For questions, issues, or discussions:
+
+* [Report an Issue on GitHub](../../issues)
+* [Open a Discussion on GitHub](../../discussions)
+* [E-mail us](mailto:maintainers.resource-tuner-moderator@qti.qualcomm.com) for general questions
 
 ## License
 
-pkg-template is licensed under the [BSD-3-Clause License](https://spdx.org/licenses/BSD-3-Clause.html). See [LICENSE.txt](LICENSE.txt) for the full license text.
+*userspace-resource-manager-extensions* is licensed under the [BSD-3-Clause-Clear license](https://spdx.org/licenses/BSD-3-Clause-Clear.html). See [LICENSE.txt](LICENSE.txt) for the full license text.
