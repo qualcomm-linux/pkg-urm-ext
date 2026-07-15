@@ -1,5 +1,6 @@
-userspace-resource-manager-extensions (0.3.9-0qcom+staging1~) UNRELEASED; urgency=low
+userspace-resource-manager-extensions (0.3.9-0qcom+staging1) forky; urgency=low
 
+  [ Agathe Porte ]
   * Initial release.
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 15 Jul 2026 15:47:43 +0200
+ -- root <root@617ee6398c59>  Wed, 15 Jul 2026 14:37:36 +0000
