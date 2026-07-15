@@ -2,6 +2,8 @@ Source: userspace-resource-manager-extensions
 Section: libs
 Priority: optional
 Maintainer: Jagadeesh Pagadala <jpagadal@qti.qualcomm.com>
+Uploaders:
+ Agathe Porte <agathe.porte@oss.qualcomm.com>,
 Build-Depends:
  debhelper-compat (= 13),
 Build-Depends-Arch:
