@@ -16,7 +16,6 @@ Package: userspace-resource-manager-extensions
 Architecture: any
 Section: libs
 Depends:
- userspace-resource-manager (>= 1.0.0-1),
  ${misc:Depends},
  ${shlibs:Depends},
 Description:  The URM Extensions framework provides a mechanism for customizing
