@@ -1,3 +1,9 @@
+userspace-resource-manager-extensions (0.3.9-0qcom+staging1~bpo13+1~) UNRELEASED; urgency=medium
+
+  * Rebuild for trixie.
+
+ -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 15 Jul 2026 16:49:14 +0200
+
 userspace-resource-manager-extensions (0.3.9-0qcom+staging1) forky; urgency=low
 
   [ Agathe Porte ]
