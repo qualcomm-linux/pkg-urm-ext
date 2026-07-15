@@ -1,8 +1,9 @@
-userspace-resource-manager-extensions (0.3.9-0qli+staging1~) UNRELEASED; urgency=medium
+userspace-resource-manager-extensions (0.3.9-0qli+staging1) forky; urgency=medium
 
+  [ Agathe Porte ]
   * No-changes rebuild with 0qli instead of 0qcom
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 15 Jul 2026 17:14:12 +0200
+ -- root <root@01ee13ab4799>  Wed, 15 Jul 2026 15:17:30 +0000
 
 userspace-resource-manager-extensions (0.3.9-0qcom+staging1) forky; urgency=low
 
