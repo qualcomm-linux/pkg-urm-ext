@@ -8,7 +8,7 @@ Build-Depends-Arch:
  dh-sequence-cmake,
  cmake,
  pkgconf,
- userspace-resource-manager (>= 1.0.0-1),
+ userspace-resource-manager (>= 0.4.3),
 Standards-Version: 4.6.2
 Homepage: https://github.com/qualcomm/userspace-resource-manager-extensions
 
