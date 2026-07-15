@@ -3,7 +3,7 @@
 include /usr/share/dpkg/architecture.mk
 
 %:
-	dh $@ --buildsystem=cmake
+	dh $@
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
