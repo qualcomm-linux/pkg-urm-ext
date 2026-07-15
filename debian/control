@@ -18,9 +18,10 @@ Section: libs
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
-Description:  The URM Extensions framework provides a mechanism for customizing
-  URM behaviour, for example: Add new custom resources and signals without modifying
-  the core URM codebase, Override default resource handlers with custom implementations,
-  Provide target-specific configurations for different hardware platforms.
-  The URM Extensions framework allows for extending URM functionality through a clean
-  plugin architecture.
+Description: Extension Configs & Plugins for Userspace Resource Manager
+ The URM Extensions framework provides a mechanism for customizing URM
+ behaviour, for example: Add new custom resources and signals without modifying
+ the core URM codebase, Override default resource handlers with custom
+ implementations, Provide target-specific configurations for different hardware
+ platforms. The URM Extensions framework allows for extending URM functionality
+ through a clean plugin architecture.
