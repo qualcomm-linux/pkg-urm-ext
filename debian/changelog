@@ -1,3 +1,9 @@
+userspace-resource-manager-extensions (0.3.9-0qcom+staging1~bpo13+2~) UNRELEASED; urgency=medium
+
+  * Unreleased changes
+
+ -- root <root@f3d7cf1f48f3>  Wed, 15 Jul 2026 14:53:12 +0000
+
 userspace-resource-manager-extensions (0.3.9-0qcom+staging1~bpo13+1) trixie; urgency=medium
 
   [ Agathe Porte ]
