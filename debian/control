@@ -17,7 +17,6 @@ Vcs-Git: https://github.com/qualcomm-linux/pkg-urm-ext.git
 
 Package: userspace-resource-manager-extensions
 Architecture: any
-Section: libs
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
