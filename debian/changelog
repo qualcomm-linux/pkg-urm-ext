@@ -1,5 +1,5 @@
-userspace-resource-manager-extensions (1.0.0-1) UNRELEASED; urgency=low
+userspace-resource-manager-extensions (0.3.9-0qcom+staging1~) UNRELEASED; urgency=low
 
   * Initial release.
 
- -- Jagadeesh Pagadala <jpagadal@qti.qualcomm.com>  Tue, 19 Jan 2026 15:16:09 +0530
+ -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 15 Jul 2026 15:47:43 +0200
