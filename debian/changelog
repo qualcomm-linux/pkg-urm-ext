@@ -1,3 +1,9 @@
+userspace-resource-manager-extensions (0.3.9-0qcom+staging1qli+staging1~) UNRELEASED; urgency=medium
+
+  * Unreleased changes
+
+ -- root <root@66f6082c9e86>  Wed, 15 Jul 2026 14:41:54 +0000
+
 userspace-resource-manager-extensions (0.3.9-0qcom+staging1) forky; urgency=low
 
   [ Agathe Porte ]
