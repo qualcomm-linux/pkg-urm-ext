@@ -1,5 +1,9 @@
-userspace-resource-manager-extensions (0.3.9-1~) UNRELEASED; urgency=medium
+userspace-resource-manager-extensions (0.3.9-1) UNRELEASED; urgency=medium
 
+  [ Simon Beaudoin ]
   * WIP
 
- -- Simon Beaudoin <sbeaudoi@qti.qualcomm.com>  Thu, 16 Jul 2026 15:19:35 +0000
+  [ GitHub Service Bot ]
+  * New upstream release
+
+ -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Fri, 17 Jul 2026 19:24:05 +0000
