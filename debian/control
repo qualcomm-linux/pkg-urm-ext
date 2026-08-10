@@ -1,5 +1,5 @@
 Source: userspace-resource-manager-extensions
-Section: libs
+Section: misc
 Maintainer: Jagadeesh Pagadala <jpagadal@qti.qualcomm.com>
 Uploaders:
  Agathe Porte <agathe.porte@oss.qualcomm.com>,
@@ -11,6 +11,7 @@ Build-Depends-Arch:
  pkgconf,
  userspace-resource-manager (>= 0.4.3),
 Standards-Version: 4.6.2
+Rules-Requires-Root: no
 Homepage: https://github.com/qualcomm/userspace-resource-manager-extensions
 Vcs-Browser: https://github.com/qualcomm-linux/pkg-urm-ext
 Vcs-Git: https://github.com/qualcomm-linux/pkg-urm-ext.git
