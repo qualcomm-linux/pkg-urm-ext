@@ -7,7 +7,6 @@ Uploaders:
 Build-Depends:
  debhelper-compat (= 13),
 Build-Depends-Arch:
- dh-sequence-cmake,
  cmake,
  pkgconf,
  userspace-resource-manager (>= 0.4.3),
