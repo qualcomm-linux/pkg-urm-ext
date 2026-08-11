@@ -1,0 +1,78 @@
+Description: Install post_boot init scripts to /usr/libexec instead of /etc
+ The post_boot scripts are vendor-provided executables that apply kernel and
+ sysfs tuning at startup, not configuration an administrator is expected to
+ edit, so per Debian Policy 9.1.1 they belong under /usr rather than /etc.
+ Installing them below /etc also makes them conffiles, so dpkg prompts on
+ upgrade whenever an upstream release changes their contents.
+ .
+ Move them to /usr/libexec/urm/initscripts/post_boot/ via
+ CMAKE_INSTALL_LIBEXECDIR, and resolve the dispatcher's search directory from
+ its own path instead of hardcoding /etc, so post_boot.sh keeps finding its
+ target-specific siblings wherever the tree is installed.
+ .
+ The urm.service unit gained a matching ExecStartPre for the new location in
+ userspace-resource-manager 0.4.3-0qli+staging2.
+Author: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+Bug: https://github.com/qualcomm-linux/pkg-urm-ext/issues/23
+Forwarded: https://github.com/qualcomm/userspace-resource-manager-extensions/pull/108
+Last-Update: 2026-08-11
+Index: pkg-urm-ext/CMakeLists.txt
+===================================================================
+--- pkg-urm-ext.orig/CMakeLists.txt
++++ pkg-urm-ext/CMakeLists.txt
+@@ -32,10 +32,12 @@ install(
+     DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/urm/target
+ )
+ 
+-# Install post_boot scripts to /etc/urm/initscripts/post_boot/
++# Install post_boot scripts to /usr/libexec/urm/initscripts/post_boot/
++# These are vendor-provided executables, not configuration, so they do not
++# belong below /etc.
+ install(
+     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/initscripts/post_boot/
+-    DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/urm/initscripts/post_boot
++    DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/urm/initscripts/post_boot
+     FILES_MATCHING
+     PATTERN "*.sh"
+     PERMISSIONS
+Index: pkg-urm-ext/docs/02-build-and-install.md
+===================================================================
+--- pkg-urm-ext.orig/docs/02-build-and-install.md
++++ pkg-urm-ext/docs/02-build-and-install.md
+@@ -78,7 +78,7 @@ Source files compiled into UrmPlugin.so:
+ | Configs/target-specific/qcs615/ | /etc/urm/target/qcs615/ | 644 |
+ | Configs/target-specific/qcs8300/ | /etc/urm/target/qcs8300/ | 644 |
+ | Configs/target-specific/qcs9100/ | /etc/urm/target/qcs9100/ | 644 |
+-| initscripts/post_boot/*.sh | /etc/urm/initscripts/post_boot/ | 755 |
++| initscripts/post_boot/*.sh | /usr/libexec/urm/initscripts/post_boot/ | 755 |
+ 
+ Note:
+ - The library installs to CMAKE_INSTALL_LIBDIR/urm/ which resolves to /usr/lib/urm/
+Index: pkg-urm-ext/docs/08-post-boot-init-scripts.md
+===================================================================
+--- pkg-urm-ext.orig/docs/08-post-boot-init-scripts.md
++++ pkg-urm-ext/docs/08-post-boot-init-scripts.md
+@@ -23,7 +23,7 @@ Post-boot scripts apply target-specific
+ | post_boot_qcs9075.sh | QCS9075 kernel tuning |
+ | post_boot_qcs9100.sh | QCS9100 kernel tuning |
+ 
+-All scripts are installed to /etc/urm/initscripts/post_boot/ with execute permissions (755).
++All scripts are installed to /usr/libexec/urm/initscripts/post_boot/ with execute permissions (755).
+ 
+ ---
+ 
+Index: pkg-urm-ext/initscripts/post_boot/post_boot.sh
+===================================================================
+--- pkg-urm-ext.orig/initscripts/post_boot/post_boot.sh
++++ pkg-urm-ext/initscripts/post_boot/post_boot.sh
+@@ -57,7 +57,9 @@ check_and_execute() {
+ 
+ get_ram_mb
+ 
+-POST_BOOT_DIR="/etc/urm/initscripts/post_boot"
++# The target-specific scripts are always installed alongside this dispatcher,
++# so resolve their location relative to it rather than hardcoding a prefix.
++POST_BOOT_DIR=$(dirname "$0")
+ 
+ # Try postboot common
+ script="$POST_BOOT_DIR/post_boot_common.sh"
