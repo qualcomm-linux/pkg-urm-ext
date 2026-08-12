@@ -1,3 +1,9 @@
+userspace-resource-manager-extensions (0.3.9-0qli+staging5~) UNRELEASED; urgency=medium
+
+  * Unreleased changes
+
+ -- Debusine Action Bot <noreply@bot.invalid>  Wed, 12 Aug 2026 07:51:53 +0000
+
 userspace-resource-manager-extensions (0.3.9-0qli+staging4) forky; urgency=medium
 
   [ Lukas Märdian ]
