@@ -1,0 +1,3 @@
+Tests: plugin-loadable
+Depends: @, python3
+Restrictions: allow-stderr, superficial

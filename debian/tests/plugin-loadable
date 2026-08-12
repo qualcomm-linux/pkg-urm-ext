@@ -1,0 +1,38 @@
+#!/bin/sh
+# Smoke-test that the shipped UrmPlugin can actually be dlopen()ed.
+#
+# The plugin is loaded by the URM daemon at runtime, so a missing or renamed
+# symbol in liburm1 does not fail the build, only the daemon at startup. Using
+# RTLD_NOW forces every undefined symbol to be resolved immediately, which
+# catches exactly that class of breakage. ctypes is used rather than a compiled
+# helper to keep the test dependencies to python3.
+set -eu
+
+fail() {
+    echo "FAIL: $*" >&2
+    exit 1
+}
+
+plugin=$(dpkg -L userspace-resource-manager-extensions \
+         | grep '/urm/libUrmPlugin\.so\.1$' | head -1)
+[ -n "$plugin" ] || fail "no libUrmPlugin.so.1 found in the package"
+[ -f "$plugin" ] || fail "$plugin is listed by dpkg but not on disk"
+
+python3 - "$plugin" <<'EOF'
+import ctypes
+import os
+import sys
+
+path = sys.argv[1]
+try:
+    ctypes.CDLL(path, mode=os.RTLD_NOW)
+except OSError as exc:
+    print("FAIL: could not dlopen %s: %s" % (path, exc), file=sys.stderr)
+    raise SystemExit(1)
+print("PASS: dlopen(%s, RTLD_NOW) succeeded" % path)
+EOF
+
+# The versioned SONAME symlink must resolve; a dangling link would mean the
+# shlibs/symlink handling regressed.
+[ -e "$plugin" ] || fail "$plugin is a dangling symlink"
+echo "PASS: plugin symlink resolves to $(readlink -f "$plugin")"
