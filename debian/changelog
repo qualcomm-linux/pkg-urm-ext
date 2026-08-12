@@ -1,8 +1,12 @@
 userspace-resource-manager-extensions (0.3.9-0qli+staging3~) UNRELEASED; urgency=medium
 
-  * Unreleased changes
+  * d/patches: Install post_boot init scripts to /usr/libexec, not /etc
+    - move-initscripts-to-usr-libexec.patch
+  * d/tests: Add initial autopkgtest.
+  * d/rules: Don't treat the private URM plugin as a public library.
+  * d/control: Add myself as a maintainer.
 
- -- Debusine Action Bot <noreply@bot.invalid>  Tue, 11 Aug 2026 09:21:53 +0000
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 12 Aug 2026 09:31:38 +0200
 
 userspace-resource-manager-extensions (0.3.9-0qli+staging2) forky; urgency=medium
 
