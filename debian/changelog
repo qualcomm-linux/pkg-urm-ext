@@ -1,8 +1,9 @@
-userspace-resource-manager-extensions (0.3.9-0qli+staging4~) UNRELEASED; urgency=medium
+userspace-resource-manager-extensions (0.3.9-0qli+staging4) forky; urgency=medium
 
+  [ Lukas Märdian ]
   * d/copyright: Adopt upstream contact.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 12 Aug 2026 09:45:09 +0200
+ -- Debusine Action Bot <noreply@bot.invalid>  Wed, 12 Aug 2026 07:47:03 +0000
 
 userspace-resource-manager-extensions (0.3.9-0qli+staging3) forky; urgency=medium
 
